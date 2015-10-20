@@ -1,4 +1,9 @@
 # exclude everything except directory foo/bar
 *.~
 *~
-.gitignore
+*/*.~
+*/*~
+!.gitignore
+*/target
+/target
+/target/*
