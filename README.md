@@ -13,8 +13,8 @@ Backend
 + EngineClass - componenta care se ocupa de generat litere aleator
 + PlayerClass - componenta care se ocupa de primit input de la client, cheama DictionaryClass.isValid(cuvant) si ofera punctaj + alte validari adiacenta
 + PlayerInterface - command line
-+ PlayerController - WebSocketController - pentru bonus partea de multiplayer asculta pe evenimentele de emit de la client cu cuvinte si se leaga la PlayerClass dand punctaje
-Frontend - TBD
++ PlayerController - WebSocketController - pentru bonus partea de multiplayer asculta pe evenimentele de emit de la client cu cuvinte si se leaga la PlayerClass dand punctaje inapoi pe canal
++ Frontend - TBD
 
 Roluri - TBD
 ------------
