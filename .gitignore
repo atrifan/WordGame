@@ -4,6 +4,11 @@
 */*.~
 */*~
 !.gitignore
+*/.idea
+/.idea
+/.idea/*
 */target
 /target
 /target/*
+*.iml
+*.project
