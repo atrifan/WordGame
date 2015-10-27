@@ -9,20 +9,21 @@ Tehnologii software:
 Model Arhitectural
 ------------------
 Backend
-+ DictionaryClass - componenta de dictionare care se ocupa cu verificatul cuvintelor in dicitonar
-+ EngineClass - componenta care se ocupa de generat litere aleator
-+ PlayerClass - componenta care se ocupa de primit input de la client, cheama DictionaryClass.isValid(cuvant) si ofera punctaj + alte validari adiacenta
++ Dictionary - componenta de dictionare care se ocupa cu verificatul cuvintelor in dicitonar
++ Engine - componenta care se ocupa de generat litere aleator
++ Player - componenta care se ocupa de primit input de la client, cheama DictionaryClass.isValid(cuvant) si ofera punctaj + alte validari adiacenta
 + PlayerInterface - command line
 + PlayerController - WebSocketController - pentru bonus partea de multiplayer asculta pe evenimentele de emit de la client cu cuvinte si se leaga la PlayerClass dand punctaje inapoi pe canal
-+ Frontend - TBD
++ Frontend - TBDM
 
 Roluri - TBD
 ------------
 + Mihai Soare - Product Owner
-+ Trifan Alexandru - TBD
-+ Andrei Smeada - TBD
-+ Dragos Visan - TBD
-+ Mihaita Ghiorghe - TBD
++ Trifan Alexandru - FrontEnd + PlayerController
++ Andrei Smeada - Docs
++ Dragos Visan - PlayerClass
++ Mihaita Ghiorghe - DictionaryClass + PlayerInterface
++ Cosmin Boaca - Engine Class + Communication Model
 
 Version Control
 ---------------
@@ -41,3 +42,29 @@ Change Log:
 + v0.6(Bonus) - PlayerController and frontend interface(the frontend interface should use websockets - library socket.io for real-time) + testing
 + v0.7(Bonus) - Deploy on TomCat - done
 
+
+Tehnical Class Description:
+---------------------------
++ Dictionary:
+  public boolean isValid(String word);
++ Engine:
+  public void registerPlayer(String name);
+  public Player getPlayer(String name);
+  public ArrayList<String> getUsedWords();
+  public String getLetters();
+  public ArrayList<Player> getPlayers();
+  public long getScore(word); 0 - duplicat -1 gresit >0 corect
++ Player:
+  public long getScor();
+  public String getName();
+  public void play(String word);
++ PlayerInterface - command line
+  static main() { -- asculta la tastatura si manipuleaza o instanta de Player() }
++ PlayerController - WS(websockets)
+  on('register', name);....
+  on('play', word); ... Player.play()....
+  emit('scor', scor)
+  emit('players', players)
+
+
+  
