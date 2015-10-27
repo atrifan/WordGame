@@ -4,7 +4,7 @@ This is a simple word puzzle word game in Romanian, that can be played in a mult
 Tehnologii software:
 --------------------
 + JAVA - J2EE + maven - backend 
-+ HTML CSS Javascript - frotend(ptr bonus)
++ HTML CSS Javascript - frotend(ptr bonus, we could use ClifJS - un framework public facut de mine ne usureaza mult munca)
 
 Model Arhitectural
 ------------------
