@@ -8,7 +8,8 @@ import java.util.HashMap;
  */
 public class Engine {
 
-    private HashMap<String, Player> players;
+    private HashMap<String, Player> players = new HashMap<String, Player>();
+    private ArrayList<String> usedWords = new ArrayList<String>();
 
     /**
      * Should return true or false depending if the player could be registered or not
@@ -48,5 +49,9 @@ public class Engine {
     public Player getPlayer(String name) {
         //TODO:
         return null;
+    }
+
+    public ArrayList<String> getUsedWords(){
+        return usedWords;
     }
 }
