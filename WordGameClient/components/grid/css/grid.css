@@ -1,0 +1,28 @@
+.grid {
+    width: 200px;
+    height: 200px;
+    border: 1px solid;
+    overflow:hidden;
+}
+
+.header-row {
+    background-color: #ebebeb;
+    overflow: hidden;
+    border-bottom: 1px solid;
+}
+.grid-row {
+    display: block;
+    overflow: hidden;
+    border-bottom: 1px solid;
+}
+.cell {
+    float: left;
+    padding: 9px;
+}
+.collapsation-data {
+    clear: both;
+    display: none;
+}
+.collapsation-data.visible {
+    display: block;
+}
