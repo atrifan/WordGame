@@ -9,7 +9,7 @@ define(['eventEmitter',
 
 
     function Modal(configuration) {
-        ClientProvider._renderCss({}, ['modal.css'], '/components/form');
+        ClientProvider._renderCss({}, ['modal.css'], '../../components/form');
         this._overlay = $('<div class="modal-bg overlay"></div>');
         this._modalWrapper = $('<div class="modal-wrapper overlay nobg"></div>');
         this._modalContent = $('<div class="center modal card-wrapper round"></div>');

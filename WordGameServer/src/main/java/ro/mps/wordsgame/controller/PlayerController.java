@@ -33,6 +33,19 @@ public class PlayerController extends MessageInbound {
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected void onClose(int status) {
+        try {
+            System.out.println(String.format("Client %s closed", this.myPlayer.getName()));
+            String name = this.myPlayer.getName();
+            WsServlet.removeConnection(name);
+            gameEngine.removePlayer(name);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     @Override
     protected void onBinaryMessage(ByteBuffer byteBuffer) throws IOException {
 
