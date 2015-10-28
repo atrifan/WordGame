@@ -1,10 +1,10 @@
 /**
  * Created by atrifan on 10/28/2015.
  */
-define(['socket.io'], function (io) {
+define([], function () {
     function SocketRegistry() {
 
-        var protocol = window.location.protocol + '//',
+        var protocol = 'ws://',
             hostname = window.location.host;
 
         this._shouldReconnect = false;
@@ -20,52 +20,42 @@ define(['socket.io'], function (io) {
 
     SocketRegistry.prototype.registerSocket = function (channel) {
         var self = this;
+        console.log(channel);
         if(channel.charAt(0) != "/") {
             channel = "/" + channel;
         }
 
 
-        var socket = io.connect(this._baseUrl + channel, {
-            'reconnect': true,
-            'query': 'bal_uid=' + (new Date()).getTime()
-        });
+        var socket = new WebSocket(this._baseUrl + channel);
 
-        socket.isConnected = socket.isConnected || false;
+        socket.emit = function(event, data) {
+            var data = {
+                event: event,
+                data: data
+            };
+            socket.send(JSON.stringify(data));
+        };
 
-        socket.on('connect', function () {
-            socket.isConnected = true;
-        });
+        socket._isDisconnected = true;
+        socket._listeners = {};
 
-        socket.on('reconnect', function () {
-            socket.isConnected = true;
-        });
+        socket.on = function(event, fn) {
+            socket._listeners[event] = fn;
+        }
 
-        // Ensure that emit calls always operate
-        // after the socket is properly connected.
-        var _emit = socket.emit;
-        /*socket.emit = function() {
-         //console.log(arguments);
-         //console.log(socket.isConnected);
-         if (socket.isConnected && !self._shouldReconnect) {
-         _emit.apply(this, arguments);
-         } else {
-         if(self._shouldReconnect) {
-         self._shouldReconnect = false;
-         socket.socket.reconnect();
-         }
+        socket.onopen = function(ev) {
+            socket.onmessage = function(message) {
+                try {
+                    message = JSON.parse(message.data);
+                    if (socket._listeners[message.event]) {
+                        socket._listeners[message.event](message.data);
+                    }
+                } catch (ex) {
+                    console.log("RECEIVED MESSAGE: ", message);
+                }
+            }
+        }
 
-         var args = Array.prototype.slice.call(arguments);
-
-         socket.once('connect', function () {
-         alert(args);
-         _emit.apply(this, args);
-         });
-         }
-         };
-         */
-        socket.on('disconnect', function (event) {
-            self._shouldReconnect = true;
-        });
 
         return socket;
 

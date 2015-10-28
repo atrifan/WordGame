@@ -10,7 +10,7 @@ requirejs.config({
    paths: {
        'componentMap': appLocation + '/public/js/component_map',
        'clientProvider': appLocation + '/public/js/client_provider',
-       'modal': appLocation + '/components/form/js/modal',
+       'modal': appLocation + '/components/form/js/Modal',
        'context': appLocation + '/public/js/context',
        'eventEmitter': appLocation + '/public/js/lib/EventEmitter',
        'framework': appLocation + '/public/js/framework',

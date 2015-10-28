@@ -8,7 +8,7 @@ define(['modal'], function (Modal) {
 
     WordGame.prototype.init = function () {
         var self = this;
-        this._socket = this.context.getSocketToServer('wordGame');
+        this._socket = this.context.getSocketToServer('WordsGame/wordGame');
         this._socket.on('registerSelf', function(okState) {
             if(okState) {
                 self._showGame();
@@ -65,9 +65,7 @@ define(['modal'], function (Modal) {
 
     WordGame.prototype._registerUser = function(userName) {
         this._userName = userName;
-        this._showGame();
-        //this._socket.emit('register', 'userName');
-
+        this._socket.emit('register', userName);
     }
 
     return WordGame;

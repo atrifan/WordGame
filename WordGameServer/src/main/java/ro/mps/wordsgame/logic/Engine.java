@@ -10,15 +10,29 @@ public class Engine {
 
     private HashMap<String, Player> players = new HashMap<String, Player>();
     private ArrayList<String> usedWords = new ArrayList<String>();
+    private static Engine _instance = null;
 
+    public synchronized static Engine getInstance() {
+        if(_instance == null) {
+            _instance = new Engine();
+        }
+
+        return _instance;
+    }
+
+    private Engine(){}
     /**
      * Should return true or false depending if the player could be registered or not
      * @param name
      * @return
      */
-    public boolean registerPlayer(String name) {
+    public Player registerPlayer(String name) {
         //TODO:
-        return true;
+        Player player = new Player();
+        player.setName(name);
+        player.setScor(0);
+        players.put(name, player);
+        return player;
     }
 
     /**
