@@ -4,6 +4,7 @@ import org.apache.catalina.websocket.MessageInbound;
 import org.apache.catalina.websocket.StreamInbound;
 import org.apache.catalina.websocket.WebSocketServlet;
 import org.apache.catalina.websocket.WsOutbound;
+import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.ObjectMapper;
 import ro.mps.wordsgame.controller.PlayerController;
 import ro.mps.wordsgame.logic.Player;
@@ -15,6 +16,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -23,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WsServlet extends WebSocketServlet {
     private static final long serialVersionUID = 1L;
     private static ConcurrentHashMap<String, PlayerController> sockets = new ConcurrentHashMap<String, PlayerController>();
+    private static ObjectMapper objectMapper = new ObjectMapper();
     public static void addConnection(String name, PlayerController controller) {
         sockets.put(name, controller);
     }
@@ -33,6 +36,24 @@ public class WsServlet extends WebSocketServlet {
 
     public static void removeConnection(String name) {
         sockets.remove(name);
+    }
+
+    public static void broadcast(WsMessage message) throws IOException {
+        String jsonMessage = objectMapper.writeValueAsString(message);
+        Set<String> keys = sockets.keySet();
+        for(String user : keys) {
+            WsOutbound outbound = sockets.get(user).getWsOutbound();
+            outbound.writeTextMessage(CharBuffer.wrap(jsonMessage));
+        }
+    }
+
+    public static void sendToUser(String userName, WsMessage message) throws IOException {
+        String jsonMessage = objectMapper.writeValueAsString(message);
+        if(sockets.containsKey(userName)) {
+            WsOutbound outbound = sockets.get(userName).getWsOutbound();
+            outbound.writeTextMessage(CharBuffer.wrap(jsonMessage));
+        }
+
     }
 
     @Override

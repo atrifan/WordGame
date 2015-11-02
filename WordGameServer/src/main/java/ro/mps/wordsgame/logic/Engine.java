@@ -1,5 +1,13 @@
 package ro.mps.wordsgame.logic;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.ObjectMapper;
+import ro.mps.wordsgame.model.EVENT;
+import ro.mps.wordsgame.model.WsMessage;
+import ro.mps.wordsgame.servlet.WsServlet;
+
+import java.io.IOException;
+import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -26,12 +34,17 @@ public class Engine {
      * @param name
      * @return
      */
-    public Player registerPlayer(String name) {
+    public Player registerPlayer(String name) throws IOException {
         //TODO:
         Player player = new Player();
         player.setName(name);
         player.setScor(0);
         players.put(name, player);
+
+        WsMessage responseMessage = new WsMessage();
+        responseMessage.setEvent(EVENT.joinedUser);
+        responseMessage.setData(player);
+        WsServlet.broadcast(responseMessage);
         return player;
     }
 
@@ -40,9 +53,20 @@ public class Engine {
      * @param name
      * @return
      */
-    public boolean removePlayer(String name) {
+    public boolean removePlayer(String name) throws IOException {
         //TODO:
-        return true;
+
+        if(players.containsKey(name)) {
+            Player playerToRemove = players.get(name);
+            players.remove(name);
+            WsMessage responseMessage = new WsMessage();
+            responseMessage.setEvent(EVENT.leftUser);
+            responseMessage.setData(playerToRemove);
+            WsServlet.broadcast(responseMessage);
+            return true;
+        }
+
+        return false;
     }
 
     public String getLetters() {

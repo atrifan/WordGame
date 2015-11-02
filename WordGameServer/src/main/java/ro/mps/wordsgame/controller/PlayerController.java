@@ -60,6 +60,9 @@ public class PlayerController extends MessageInbound {
             case register:
                 this._registerPlayer(message);
                 break;
+            case play:
+                this._play(message);
+                break;
         }
     }
 
@@ -67,10 +70,16 @@ public class PlayerController extends MessageInbound {
         String name = (String) message.getData();
         WsServlet.addConnection(name, this);
         myPlayer = gameEngine.registerPlayer(name);
-        WsMessage responseMessage = new WsMessage();
-        responseMessage.setEvent(EVENT.registerSelf);
-        responseMessage.setData(true);
-        String jsonMessage = objectMapper.writeValueAsString(responseMessage);
-        this.wsOutbound.writeTextMessage(CharBuffer.wrap(jsonMessage));
+    }
+
+    protected void _play(WsMessage message) throws IOException {
+        String word = (String) message.getData();
+        long score = myPlayer.play(word);
+
+        //notify other players of my score
+        WsMessage broadcastMessage = new WsMessage();
+        broadcastMessage.setEvent(EVENT.updateScore);
+        broadcastMessage.setData(myPlayer);
+        WsServlet.broadcast(broadcastMessage);
     }
 }

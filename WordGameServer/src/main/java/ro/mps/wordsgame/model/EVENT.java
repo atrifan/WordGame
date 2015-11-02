@@ -5,5 +5,8 @@ package ro.mps.wordsgame.model;
  */
 public enum EVENT {
     register,
-    registerSelf
+    joinedUser,
+    leftUser,
+    play,
+    updateScore
 }
