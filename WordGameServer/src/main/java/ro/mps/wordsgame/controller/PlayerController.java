@@ -53,7 +53,7 @@ public class PlayerController extends MessageInbound {
 
     @Override
     protected void onTextMessage(CharBuffer charBuffer) throws IOException {
-        System.out.println("Accept Message : "+ charBuffer);
+        System.out.println("Accept Message : " + charBuffer);
         WsMessage message = objectMapper.readValue(charBuffer.toString(), WsMessage.class);
         EVENT event = message.getEvent();
         switch (event) {
@@ -70,6 +70,11 @@ public class PlayerController extends MessageInbound {
         String name = (String) message.getData();
         WsServlet.addConnection(name, this);
         myPlayer = gameEngine.registerPlayer(name);
+        WsMessage responseData = new WsMessage();
+        responseData.setEvent(EVENT.registerSelf);
+        responseData.setData(gameEngine.getPlayers());
+        String jsonMessage = objectMapper.writeValueAsString(responseData);
+        this.wsOutbound.writeTextMessage(CharBuffer.wrap(jsonMessage));
     }
 
     protected void _play(WsMessage message) throws IOException {

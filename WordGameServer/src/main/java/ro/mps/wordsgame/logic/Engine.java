@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Created by atrifan on 10/28/2015.
@@ -76,7 +77,12 @@ public class Engine {
 
     public ArrayList<Player> getPlayers() {
         //TODO:
-        return null;
+        Set<String> playerNames = players.keySet();
+        ArrayList<Player> response = new ArrayList<Player>();
+        for(String userName : playerNames) {
+            response.add(players.get(userName));
+        }
+        return response;
     }
 
     public long getScore(String word) {

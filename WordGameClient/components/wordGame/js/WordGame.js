@@ -9,14 +9,25 @@ define(['modal'], function (Modal) {
     WordGame.prototype.init = function () {
         var self = this;
         this._socket = this.context.getSocketToServer('WordsGame/wordGame');
-        this._socket.on('registerSelf', function(okState) {
-            if(okState) {
+        this._socket.on('registerSelf', function(currentUsers) {
+            console.log('register', currentUsers);
+            self._registered = true;
+            if(currentUsers) {
                 self._showGame();
+                self._appendUsers(currentUsers);
             }
         });
-        this._socket.on('registerUser', function(user) {
-            self._appendUser(user);
+        this._socket.on('joinedUser', function(user) {
+            if(self._registered) {
+                console.log('joined', user);
+                self._appendUser(user);
+            }
         });
+        this._socket.on('leftUser', function(user) {
+            console.log('left', user);
+            self._removeUser(user);
+        })
+
     };
 
     WordGame.prototype.start = function () {
@@ -29,10 +40,6 @@ define(['modal'], function (Modal) {
 
     WordGame.prototype._showGame = function () {
         this._gameWrapper.css('visibility', 'visible');
-        this._appendUser({
-            userName: 'alex',
-            scor: 0
-        });
     }
 
 
@@ -58,10 +65,26 @@ define(['modal'], function (Modal) {
         })
     };
 
+    WordGame.prototype._appendUsers = function(users) {
+        for(var i = 0; i < users.length; i++) {
+            this._appendUser(users[i]);
+        }
+    };
+
     WordGame.prototype._appendUser = function (user) {
+        var userContainer = this._usersContainer.find('#' + user.name);
+        if(userContainer.length != 0) {
+            return;
+        }
         var locationToAppendUser = this._usersContainer.find('.card-body');
         this.context.insertTemplate('user', user, locationToAppendUser);
     };
+
+    WordGame.prototype._removeUser = function(user) {
+        console.log(user);
+        var userContainer = this._usersContainer.find('#' + user.name);
+        userContainer.remove();
+    }
 
     WordGame.prototype._registerUser = function(userName) {
         this._userName = userName;
