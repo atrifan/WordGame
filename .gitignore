@@ -12,3 +12,6 @@
 /target/*
 *.iml
 *.project
+nohup.out
+*.classpath
+*.settings*

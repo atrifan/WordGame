@@ -9,5 +9,6 @@ public enum EVENT {
     registerSelf,
     leftUser,
     play,
-    updateScore
+    updateScore,
+    lettersBroadcast
 }
