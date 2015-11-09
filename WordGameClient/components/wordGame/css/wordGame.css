@@ -63,6 +63,16 @@
     height: 520px;
 }
 
+.playable-area .letters .letter {
+    background-color: darkcyan;
+    width: 60px;
+    height: 60px;
+    font-size: 30px;
+    line-height: 60px;
+    text-align: center;
+    float: left;
+}
+
 .PROFILE:before {
     content: '\f007';
     font-size: 14px;

@@ -6,5 +6,5 @@
       "view": "index.html"
     }
   },
-  "templates": ["user.html", "word.html"]
+  "templates": ["user.html", "word.html", "letter.html"]
 }

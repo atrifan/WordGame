@@ -9,6 +9,18 @@ define(['modal'], function (Modal) {
     WordGame.prototype.init = function () {
         var self = this;
         this._socket = this.context.getSocketToServer('WordsGame/wordGame');
+
+
+    };
+
+    WordGame.prototype.start = function () {
+        this._root = this.context.getRoot();
+        this._gameWrapper = this._root.find('.wordGameWrapper');
+        this._wordShowLocation = this._root.find('.playable-area .letters');
+        this._usersContainer = this._root.find('.users-container');
+        this._chooseUserName();
+        var self = this;
+
         this._socket.on('registerSelf', function(currentUsers) {
             console.log('register', currentUsers);
             self._registered = true;
@@ -26,17 +38,24 @@ define(['modal'], function (Modal) {
         this._socket.on('leftUser', function(user) {
             console.log('left', user);
             self._removeUser(user);
-        })
+        });
 
-    };
-
-    WordGame.prototype.start = function () {
-        this._root = this.context.getRoot();
-        this._gameWrapper = this._root.find('.wordGameWrapper');
-        this._usersContainer = this._root.find('.users-container');
-        this._chooseUserName();
+        this._socket.on('lettersBroadcast', self._showLetters.bind(self));
 
     }
+
+    WordGame.prototype._showLetters = function(data) {
+        if(!this._registered) {
+            return;
+        }
+
+        this._wordShowLocation.html('');
+        for(var i = 0; i < data.length; i++) {
+            this.context.insertTemplate('letter', {
+                letter: data[i]
+            }, this._wordShowLocation);
+        }
+    };
 
     WordGame.prototype._showGame = function () {
         this._gameWrapper.css('visibility', 'visible');
