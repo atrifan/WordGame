@@ -63,6 +63,9 @@ public class PlayerController extends MessageInbound {
             case play:
                 this._play(message);
                 break;
+            case getLetters:
+                this._getLetters();
+                break;
         }
     }
 
@@ -74,6 +77,15 @@ public class PlayerController extends MessageInbound {
         responseData.setEvent(EVENT.registerSelf);
         responseData.setData(gameEngine.getPlayers());
         String jsonMessage = objectMapper.writeValueAsString(responseData);
+        this.wsOutbound.writeTextMessage(CharBuffer.wrap(jsonMessage));
+    }
+
+    protected void _getLetters() throws IOException {
+        String letters = gameEngine.getLetters();
+        WsMessage message = new WsMessage();
+        message.setEvent(EVENT.lettersBroadcast);
+        message.setData(letters);
+        String jsonMessage = objectMapper.writeValueAsString(message);
         this.wsOutbound.writeTextMessage(CharBuffer.wrap(jsonMessage));
     }
 

@@ -10,5 +10,6 @@ public enum EVENT {
     leftUser,
     play,
     updateScore,
-    lettersBroadcast
+    lettersBroadcast,
+    getLetters
 }
