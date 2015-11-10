@@ -59,6 +59,7 @@ define(['modal'], function (Modal) {
 
     WordGame.prototype._showGame = function () {
         this._gameWrapper.css('visibility', 'visible');
+        this._socket.emit('getLetters');
     }
 
 
