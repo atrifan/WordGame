@@ -62,9 +62,7 @@ define([], function () {
         }
 
         this._firstTime = false;
-        if(("" + value).length == 0) {
-            this._firstTime = true;
-        }
+        this._input.val(value);
         return this;
     };
 

@@ -8,6 +8,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.ObjectMapper;
 import ro.mps.wordsgame.controller.PlayerController;
 import ro.mps.wordsgame.logic.Player;
+import ro.mps.wordsgame.model.EVENT;
 import ro.mps.wordsgame.model.WsMessage;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,9 +42,9 @@ public class WsServlet extends WebSocketServlet {
 
     public static void broadcast(WsMessage message) throws IOException {
         String jsonMessage = objectMapper.writeValueAsString(message);
-        Set<String> keys = sockets.keySet();
-        for(String user : keys) {
-            WsOutbound outbound = sockets.get(user).getWsOutbound();
+        Collection<PlayerController> connections = sockets.values();
+        for(PlayerController playerController : connections) {
+            WsOutbound outbound = playerController.getWsOutbound();
             outbound.writeTextMessage(CharBuffer.wrap(jsonMessage));
         }
     }
@@ -54,6 +56,11 @@ public class WsServlet extends WebSocketServlet {
             outbound.writeTextMessage(CharBuffer.wrap(jsonMessage));
         }
 
+    }
+
+    public static void updatePlayerController(Player player) {
+        PlayerController playerController = sockets.get(player.getName());
+        playerController.updatePlayer(player);
     }
 
     @Override

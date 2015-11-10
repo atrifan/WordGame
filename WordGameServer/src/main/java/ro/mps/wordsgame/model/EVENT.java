@@ -11,5 +11,6 @@ public enum EVENT {
     play,
     updateScore,
     lettersBroadcast,
-    getLetters
+    getLetters,
+    usedWord
 }
