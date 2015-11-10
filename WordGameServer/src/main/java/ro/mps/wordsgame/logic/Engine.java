@@ -2,6 +2,7 @@ package ro.mps.wordsgame.logic;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import ro.mps.wordsgame.model.EVENT;
 import ro.mps.wordsgame.model.WsMessage;
@@ -17,7 +18,7 @@ public class Engine {
     private static final String dices[] = { "AAUIHJ", "TRNSMB", "AARCDM", "EEIODF", "AEUSFV", "TLNPGC", "AIOEXZ",
             "NSTRGB", "IIUELP" };
 
-    private HashMap<String, Player> players = new HashMap<String, Player>();
+    private ConcurrentHashMap<String, Player> players = new ConcurrentHashMap<String, Player>();
     private ArrayList<String> usedWords = new ArrayList<String>();
     private String letters = null;
     private Timer timer = null;
@@ -41,6 +42,12 @@ public class Engine {
                 WsMessage lettersBroadcastMessage = new WsMessage();
                 lettersBroadcastMessage.setEvent(EVENT.lettersBroadcast);
                 lettersBroadcastMessage.setData(letters);
+                Collection<Player> thePlayers = players.values();
+                for(Player player : thePlayers) {
+                    player.setScor(0);
+                    updatePlayer(player.getName(), player);
+                    WsServlet.updatePlayerController(player);
+                }
                 try {
                     WsServlet.broadcast(lettersBroadcastMessage);
                 } catch (IOException e) {
@@ -118,6 +125,9 @@ public class Engine {
         return response;
     }
 
+    public synchronized void updatePlayer(String name, Player player) {
+        players.put(name, player);
+    }
     /**
      * 
      * @param word
@@ -149,12 +159,16 @@ public class Engine {
         return true;
     }
 
-    public long getScore(String word) {
-        if (!isComposedOfLetters(word, letters) || !dictionary.isValid(word)) {
+    public long getScore(String word) throws IOException {
+        /*if (!isComposedOfLetters(word, letters) || !dictionary.isValid(word)) {
             return 0;
-        }
+        }*/
         if (!usedWords.contains(word)) {
             usedWords.add(word);
+            WsMessage usedWordMessage = new WsMessage();
+            usedWordMessage.setEvent(EVENT.usedWord);
+            usedWordMessage.setData(word);
+            WsServlet.broadcast(usedWordMessage);
         }
         return word.length();
     }

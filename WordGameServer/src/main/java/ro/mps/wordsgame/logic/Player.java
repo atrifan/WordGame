@@ -1,5 +1,6 @@
 package ro.mps.wordsgame.logic;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -32,8 +33,9 @@ public class Player implements Serializable{
      * @param word
      * @return
      */
-    public long play(String word) {
+    public void play(String word) throws IOException {
         //TODO:
-        return 0;
+        long score = Engine.getInstance().getScore(word);
+        this.scor += score;
     }
 }

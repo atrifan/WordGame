@@ -13,6 +13,7 @@ import ro.mps.wordsgame.servlet.WsServlet;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.util.HashMap;
 
 /**
  * Created by atrifan on 10/28/2015.
@@ -22,6 +23,10 @@ public class PlayerController extends MessageInbound {
     private ObjectMapper objectMapper = new ObjectMapper();
     Engine gameEngine = Engine.getInstance();
     Player myPlayer = null;
+
+    public void updatePlayer(Player player) {
+        myPlayer = player;
+    }
 
     @Override
     public void onOpen(WsOutbound outbound) {
@@ -63,9 +68,6 @@ public class PlayerController extends MessageInbound {
             case play:
                 this._play(message);
                 break;
-            case getLetters:
-                this._getLetters();
-                break;
         }
     }
 
@@ -75,23 +77,19 @@ public class PlayerController extends MessageInbound {
         myPlayer = gameEngine.registerPlayer(name);
         WsMessage responseData = new WsMessage();
         responseData.setEvent(EVENT.registerSelf);
-        responseData.setData(gameEngine.getPlayers());
+        HashMap<String, Object> startingInfo = new HashMap<String, Object>();
+        startingInfo.put("players", gameEngine.getPlayers());
+        startingInfo.put("usedWords", gameEngine.getUsedWords());
+        startingInfo.put("lettersToPlay", gameEngine.getLetters());
+        responseData.setData(startingInfo);
         String jsonMessage = objectMapper.writeValueAsString(responseData);
-        this.wsOutbound.writeTextMessage(CharBuffer.wrap(jsonMessage));
-    }
-
-    protected void _getLetters() throws IOException {
-        String letters = gameEngine.getLetters();
-        WsMessage message = new WsMessage();
-        message.setEvent(EVENT.lettersBroadcast);
-        message.setData(letters);
-        String jsonMessage = objectMapper.writeValueAsString(message);
         this.wsOutbound.writeTextMessage(CharBuffer.wrap(jsonMessage));
     }
 
     protected void _play(WsMessage message) throws IOException {
         String word = (String) message.getData();
-        long score = myPlayer.play(word);
+        myPlayer.play(word);
+        Engine.getInstance().updatePlayer(myPlayer.getName(), myPlayer);
 
         //notify other players of my score
         WsMessage broadcastMessage = new WsMessage();

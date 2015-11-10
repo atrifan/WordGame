@@ -8,6 +8,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.ObjectMapper;
 import ro.mps.wordsgame.controller.PlayerController;
 import ro.mps.wordsgame.logic.Player;
+import ro.mps.wordsgame.model.EVENT;
 import ro.mps.wordsgame.model.WsMessage;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,6 +56,11 @@ public class WsServlet extends WebSocketServlet {
             outbound.writeTextMessage(CharBuffer.wrap(jsonMessage));
         }
 
+    }
+
+    public static void updatePlayerController(Player player) {
+        PlayerController playerController = sockets.get(player.getName());
+        playerController.updatePlayer(player);
     }
 
     @Override
