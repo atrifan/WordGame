@@ -1,12 +1,7 @@
 package ro.mps.wordsgame.logic;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import ro.mps.wordsgame.model.EVENT;
 import ro.mps.wordsgame.model.WsMessage;
@@ -118,10 +113,10 @@ public class Engine {
     }
 
     public ArrayList<Player> getPlayers() {
-        Set<String> playerNames = players.keySet();
+        Collection<Player> playerEntities = players.values();
         ArrayList<Player> response = new ArrayList<Player>();
-        for(String userName : playerNames) {
-            response.add(players.get(userName));
+        for(Player playerEntity : playerEntities) {
+            response.add(playerEntity);
         }
         return response;
     }
