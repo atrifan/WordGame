@@ -6,6 +6,7 @@ public class RomanianLanguage implements ILanguage {
 	HashMap<Character, String> mappings;
 	
 	public RomanianLanguage() {
+		mappings = new HashMap<Character, String>();
 		mappings.put('a', "aăâ");
 		mappings.put('s', "sş");
 		mappings.put('t', "tţ");
@@ -13,6 +14,6 @@ public class RomanianLanguage implements ILanguage {
 	}
 	
 	public HashMap<Character, String> getMappings() {
-		return null;
+		return mappings;
 	}
 }

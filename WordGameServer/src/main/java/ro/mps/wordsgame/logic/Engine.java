@@ -63,7 +63,7 @@ public class Engine {
 				}
 			}
     		
-    	}, LETTERS_BROADCAST_TIME);
+    	}, 0, LETTERS_BROADCAST_TIME);
     }
     
     /**
