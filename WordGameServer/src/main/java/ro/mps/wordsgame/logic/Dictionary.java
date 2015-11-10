@@ -6,7 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.util;
+import java.util.*;
 
 /**
  * Created by alexandru.trifan on 27.10.2015.
@@ -14,7 +14,7 @@ import java.util;
 
 public class Dictionary {
 
-	private HashMap<String> wordSet;
+	private HashSet<String> wordSet = new HashSet();
 
 	public Dictionary() throws Exception {
 		try {
@@ -28,9 +28,9 @@ public class Dictionary {
 	
 	private void readWords() throws Exception {
 		try {
-			File inputFile = new File("words");
+			File inputFile = new File("/home/mihai/workspace/words");
 			BufferedReader in = new BufferedReader(
-					   	  new InputStreamReader(
+								new InputStreamReader(
 			                    new FileInputStream(inputFile), "UTF8"));
 			
 			String str;
