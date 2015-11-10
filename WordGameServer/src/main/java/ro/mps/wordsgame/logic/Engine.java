@@ -12,20 +12,11 @@ import ro.mps.wordsgame.servlet.WsServlet;
  */
 public class Engine {
 
-	private static final int LETTERS_BROADCAST_TIME = 30;
+    private static final int LETTERS_BROADCAST_TIME = 60000;
 
-	private static final String dices[] = {
-			"AAUIHJ",
-			"TRNSMB",
-			"AARCDM",
-			"EEIODF",
-			"AEUSFV",
-			"TLNPGC",
-			"AIOEXZ",
-			"NSTRGB",
-			"IIUELP"
-	};
-	
+    private static final String dices[] = { "AAUIHJ", "TRNSMB", "AARCDM", "EEIODF", "AEUSFV", "TLNPGC", "AIOEXZ",
+            "NSTRGB", "IIUELP" };
+
     private HashMap<String, Player> players = new HashMap<String, Player>();
     private ArrayList<String> usedWords = new ArrayList<String>();
     private String letters = null;
@@ -35,34 +26,35 @@ public class Engine {
     private static Engine _instance = null;
 
     public synchronized static Engine getInstance() {
-        if(_instance == null) {
+        if (_instance == null) {
             _instance = new Engine();
         }
         return _instance;
     }
 
     private Engine() {
-    	timer = new Timer();
-    	timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				if (letters != null) {
-					WsMessage lettersBroadcastMessage = new WsMessage();
-					lettersBroadcastMessage.setEvent(EVENT.lettersBroadcast);
-					lettersBroadcastMessage.setData(letters);
-					try {
-						WsServlet.broadcast(lettersBroadcastMessage);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-    		
-    	}, 0, LETTERS_BROADCAST_TIME);
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                letters = generateLetters();
+                WsMessage lettersBroadcastMessage = new WsMessage();
+                lettersBroadcastMessage.setEvent(EVENT.lettersBroadcast);
+                lettersBroadcastMessage.setData(letters);
+                try {
+                    WsServlet.broadcast(lettersBroadcastMessage);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }, 0, LETTERS_BROADCAST_TIME);
     }
-    
+
     /**
-     * Should return true or false depending if the player could be registered or not
+     * Should return true or false depending if the player could be registered
+     * or not
+     * 
      * @param name
      * @return
      */
@@ -81,11 +73,12 @@ public class Engine {
 
     /**
      * Should return true false if the player was removed
+     * 
      * @param name
      * @return
      */
     public boolean removePlayer(String name) throws IOException {
-        if(players.containsKey(name)) {
+        if (players.containsKey(name)) {
             Player playerToRemove = players.get(name);
             players.remove(name);
             WsMessage responseMessage = new WsMessage();
@@ -97,76 +90,80 @@ public class Engine {
 
         return false;
     }
-    
+
     private String[] generateDices() {
-    	return dices;
+        return dices;
     }
 
     public String getLetters() {
-    	String[] dices = generateDices();
-    	StringBuffer letters = new StringBuffer();
-    	Random random = new Random();
-    	for (String dice : dices) {
-    		letters.append(dice.charAt(random.nextInt(dice.length())));
-    	}
-    	return letters.toString();
+        return letters;
+    }
+
+    private String generateLetters() {
+        String[] dices = generateDices();
+        StringBuffer letters = new StringBuffer();
+        Random random = new Random();
+        for (String dice : dices) {
+            letters.append(dice.charAt(random.nextInt(dice.length())));
+        }
+        return letters.toString();
     }
 
     public ArrayList<Player> getPlayers() {
         Collection<Player> playerEntities = players.values();
         ArrayList<Player> response = new ArrayList<Player>();
-        for(Player playerEntity : playerEntities) {
+        for (Player playerEntity : playerEntities) {
             response.add(playerEntity);
         }
         return response;
     }
-    
+
     /**
      * 
      * @param word
      * @param letters
-     * @return true if word is composed of letters (taking special characters into account)
+     * @return true if word is composed of letters (taking special characters
+     *         into account)
      */
     private boolean isComposedOfLetters(String word, String letters) {
-    	if (word == null || letters == null)
-    		return false;
-    	HashMap<Character, String> mappings = language.getMappings();
-    	for (int i = 0; i < word.length(); ++i) {
-    		boolean isValidLetter = false;
-    		if (mappings.containsKey(word.charAt(i))) {
-    			String mapping = mappings.get(word.charAt(i));
-    			for (int j = 0; j < mapping.length(); j++) {
-    				if (letters.indexOf(mapping.charAt(i)) != -1) {
-    					isValidLetter = true;
-    					break;
-    				}
-    			}
-    		} else {
-    			isValidLetter = (letters.indexOf(word.charAt(i)) != -1);
-    		}
-    		if (!isValidLetter) {
-    			return false;
-    		}
-    	}
-    	return true;
+        if (word == null || letters == null)
+            return false;
+        HashMap<Character, String> mappings = language.getMappings();
+        for (int i = 0; i < word.length(); ++i) {
+            boolean isValidLetter = false;
+            if (mappings.containsKey(word.charAt(i))) {
+                String mapping = mappings.get(word.charAt(i));
+                for (int j = 0; j < mapping.length(); j++) {
+                    if (letters.indexOf(mapping.charAt(i)) != -1) {
+                        isValidLetter = true;
+                        break;
+                    }
+                }
+            } else {
+                isValidLetter = (letters.indexOf(word.charAt(i)) != -1);
+            }
+            if (!isValidLetter) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public long getScore(String word) {
-    	if (!isComposedOfLetters(word, letters) ||
-    			!dictionary.isValid(word)) {
-    		return 0;
-    	}
-    	if (!usedWords.contains(word)) {
-    		usedWords.add(word);
-    	}
-    	return word.length();
+        if (!isComposedOfLetters(word, letters) || !dictionary.isValid(word)) {
+            return 0;
+        }
+        if (!usedWords.contains(word)) {
+            usedWords.add(word);
+        }
+        return word.length();
     }
 
     public Player getPlayer(String name) {
-    	return players.get(name);
+        return players.get(name);
     }
 
-    public ArrayList<String> getUsedWords(){
+    public ArrayList<String> getUsedWords() {
         return usedWords;
     }
 }
