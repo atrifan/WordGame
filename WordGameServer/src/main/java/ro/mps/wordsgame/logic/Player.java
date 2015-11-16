@@ -33,7 +33,7 @@ public class Player implements Serializable{
      * @param word
      * @return
      */
-    public void play(String word) throws IOException {
+    public void play(String word) throws Exception {
         //TODO:
         long score = Engine.getInstance().getScore(word);
         this.scor += score;

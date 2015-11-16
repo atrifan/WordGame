@@ -65,6 +65,11 @@ public class WsServlet extends WebSocketServlet {
 
     @Override
     protected StreamInbound createWebSocketInbound(String s, HttpServletRequest httpServletRequest) {
-        return new PlayerController();
+        try {
+            return new PlayerController();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

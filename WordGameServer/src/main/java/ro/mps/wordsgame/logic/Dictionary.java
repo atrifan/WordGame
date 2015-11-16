@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.text.Normalizer;
 import java.util.*;
 
 /**
@@ -17,25 +18,21 @@ public class Dictionary {
 	private HashSet<String> wordSet = new HashSet();
 
 	public Dictionary() throws Exception {
-		try {
-			readWords();
-		}
-		
-		catch (Exception e) {
-			throw e;
-		}
+		readWords();
 	}
 	
 	private void readWords() throws Exception {
 		try {
-			File inputFile = new File("/home/mihai/workspace/words");
 			BufferedReader in = new BufferedReader(
 								new InputStreamReader(
-			                    new FileInputStream(inputFile), "UTF8"));
+			                    new FileInputStream(this.getClass().getClassLoader()
+										.getResource("words").getFile()), "UTF8"));
 			
 			String str;
 		      
 			while ((str = in.readLine()) != null) {
+				str = Normalizer.normalize(str, Normalizer.Form.NFD);
+				str = str.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
 			    wordSet.add(str.toLowerCase());
 			}
 			

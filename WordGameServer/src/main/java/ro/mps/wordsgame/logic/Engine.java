@@ -23,22 +23,23 @@ public class Engine {
     private String letters = null;
     private Timer timer = null;
     private ILanguage language = new RomanianLanguage();
-    private Dictionary dictionary = new Dictionary();
+    private Dictionary dictionary;
     private static Engine _instance = null;
 
-    public synchronized static Engine getInstance() {
+    public synchronized static Engine getInstance() throws Exception {
         if (_instance == null) {
             _instance = new Engine();
         }
         return _instance;
     }
 
-    private Engine() {
+    private Engine() throws Exception {
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 letters = generateLetters();
+                usedWords.clear();
                 WsMessage lettersBroadcastMessage = new WsMessage();
                 lettersBroadcastMessage.setEvent(EVENT.lettersBroadcast);
                 lettersBroadcastMessage.setData(letters);
@@ -56,6 +57,7 @@ public class Engine {
             }
 
         }, 0, LETTERS_BROADCAST_TIME);
+        dictionary = new Dictionary();
     }
 
     /**
@@ -136,8 +138,20 @@ public class Engine {
      *         into account)
      */
     private boolean isComposedOfLetters(String word, String letters) {
-        if (word == null || letters == null)
+        if (word == null || letters == null) {
+            System.out.println("DA FUQ");
             return false;
+        }
+
+        for(int i = 0; i < word.length(); i++) {
+            if(letters.indexOf(word.charAt(i)) == -1) {
+                System.out.println("FOUND IT HERE " + word.charAt(i) + "---" + letters);
+                return false;
+            };
+        }
+        return true;
+        //THE BELOW CODE IS FAULTY AND DOES NOT WORK AS EXPECTED
+        /*
         HashMap<Character, String> mappings = language.getMappings();
         for (int i = 0; i < word.length(); ++i) {
             boolean isValidLetter = false;
@@ -156,21 +170,25 @@ public class Engine {
                 return false;
             }
         }
-        return true;
+        return true;*/
     }
 
     public long getScore(String word) throws IOException {
-        /*if (!isComposedOfLetters(word, letters) || !dictionary.isValid(word)) {
+        if (!isComposedOfLetters(word.toLowerCase(), letters.toLowerCase()) || !dictionary.isValid(word.toLowerCase())) {
             return 0;
-        }*/
-        if (!usedWords.contains(word)) {
-            usedWords.add(word);
+        }
+
+        System.out.println("OK HERE");
+        if (!usedWords.contains(word.toLowerCase())) {
+            usedWords.add(word.toLowerCase());
             WsMessage usedWordMessage = new WsMessage();
             usedWordMessage.setEvent(EVENT.usedWord);
             usedWordMessage.setData(word);
             WsServlet.broadcast(usedWordMessage);
+            return word.length();
         }
-        return word.length();
+
+        return 0;
     }
 
     public Player getPlayer(String name) {

@@ -20,6 +20,7 @@ define(['modal'], function (Modal) {
         this._wordShowLocation = this._root.find('.playable-area .letters');
         this._usersContainer = this._root.find('.users-container');
         this._chooseUserName();
+        this._scorBoard = {};
         var self = this;
 
         this.context.getChildren().then(function (children) {
@@ -32,6 +33,13 @@ define(['modal'], function (Modal) {
             self._registered = true;
             if(data) {
                 self._showGame();
+                for(var i = 0; i < data.players.length; i++) {
+                    var player = data.players[i];
+                    if(player.name == self._userName) {
+                        player.isMainPlayer = true;
+                        self._appendUser(player);
+                    }
+                }
                 self._appendUsers(data.players);
                 self._appendUsedWords(data.usedWords);
                 self._showLetters(data.lettersToPlay, true)
@@ -57,9 +65,11 @@ define(['modal'], function (Modal) {
     }
 
     WordGame.prototype._showLetters = function(data, dontReset) {
+        console.log(dontReset);
         if(!this._registered) {
             return;
         }
+
 
         this._wordShowLocation.html('');
         for(var i = 0; i < data.length; i++) {
@@ -68,7 +78,11 @@ define(['modal'], function (Modal) {
             }, this._wordShowLocation);
         }
 
-        if(!dontReset) {
+        if(typeof dontReset == 'undefined') {
+
+            console.log("I AM HERE")
+
+            this._scorBoard = {};
             this._usersContainer.find('.scor').each(function (index, element) {
                 $(element).text('0');
             });
@@ -120,7 +134,9 @@ define(['modal'], function (Modal) {
 
     WordGame.prototype._appendUsers = function(users) {
         for(var i = 0; i < users.length; i++) {
-            this._appendUser(users[i]);
+            if(users[i].name != this._userName) {
+                this._appendUser(users[i]);
+            }
         }
     };
 
@@ -136,7 +152,7 @@ define(['modal'], function (Modal) {
             return;
         }
         var locationToAppendUser = this._usersContainer.find('.card-body');
-        console.log("APPENDING USER ", user);
+        this._scorBoard[user.name] = user.scor;
         this.context.insertTemplate('user', user, locationToAppendUser);
     };
 
@@ -144,6 +160,7 @@ define(['modal'], function (Modal) {
         console.log(user);
         var userContainer = this._usersContainer.find('#' + user.name);
         userContainer.remove();
+        delete this._scorBoard[user.name];
     }
 
     WordGame.prototype._registerUser = function(userName) {
@@ -155,6 +172,8 @@ define(['modal'], function (Modal) {
         console.log("GOT THE NEW SCOR ", data);
         var name = data.name,
             scor = data.scor;
+
+        this._scorBoard[name] = scor;
 
         var scorLocation = this._usersContainer.find('#' + name).find('.scor');
         var currentScor = Number(scorLocation.text());

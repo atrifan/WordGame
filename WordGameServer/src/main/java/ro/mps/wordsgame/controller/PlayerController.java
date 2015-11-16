@@ -21,8 +21,12 @@ import java.util.HashMap;
 public class PlayerController extends MessageInbound {
     WsOutbound wsOutbound;
     private ObjectMapper objectMapper = new ObjectMapper();
-    Engine gameEngine = Engine.getInstance();
+    Engine gameEngine;
     Player myPlayer = null;
+
+    public PlayerController() throws Exception {
+        gameEngine = Engine.getInstance();
+    }
 
     public void updatePlayer(Player player) {
         myPlayer = player;
@@ -66,7 +70,11 @@ public class PlayerController extends MessageInbound {
                 this._registerPlayer(message);
                 break;
             case play:
-                this._play(message);
+                try {
+                    this._play(message);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }
@@ -86,7 +94,7 @@ public class PlayerController extends MessageInbound {
         this.wsOutbound.writeTextMessage(CharBuffer.wrap(jsonMessage));
     }
 
-    protected void _play(WsMessage message) throws IOException {
+    protected void _play(WsMessage message) throws Exception {
         String word = (String) message.getData();
         myPlayer.play(word);
         Engine.getInstance().updatePlayer(myPlayer.getName(), myPlayer);

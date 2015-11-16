@@ -10,22 +10,23 @@
     overflow: hidden;
     padding: 12px;
     height: 520px;
+    width:70%;
     float: left;
     border: 1px solid;
 }
 
 .gameContainer .playable-area {
     float: left;
-    width: 600px;
+    width: 50%;
     position: relative;
     height: auto;
     padding: 20px;
-    height: 500px;
+    height: 100%;
 }
 
 .gameContainer .words-wrapper {
     float: left;
-    width: 300px;
+    width: 36%;
     margin-left: 40px;
 }
 
@@ -36,14 +37,15 @@
 
 .playable-area .playable {
     position: absolute;
-    bottom: 10px;
+    bottom: 35px;
     margin-left: -17px;
 }
 
 .playable-area .letters {
     background-color: #fff;
-    height: 450px;
-    padding-left: 9px;
+    overflow:hidden;
+    height: auto;
+    padding: 14px;
     margin-left: 9px;
     width: 100%;
 }
@@ -63,6 +65,10 @@
     height: 520px;
 }
 
+.main-player {
+    color: darkcyan !important;
+}
+
 .playable-area .letters .letter {
     background-color: darkcyan;
     width: 60px;
@@ -71,6 +77,7 @@
     line-height: 60px;
     text-align: center;
     float: left;
+    margin-left: 5px;
 }
 
 .PROFILE:before {
