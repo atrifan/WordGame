@@ -9,7 +9,7 @@ define([], function () {
 
         this._shouldReconnect = false;
 
-        this._baseUrl = protocol + hostname + (hostname.indexOf('rhcloud') != -1) ? ':8000' : "";
+        this._baseUrl = protocol + hostname + ((hostname.indexOf('rhcloud') != -1) ? ':8000' : "");
     };
 
     SocketRegistry._instance = null;
