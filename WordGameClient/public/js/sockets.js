@@ -9,7 +9,7 @@ define([], function () {
 
         this._shouldReconnect = false;
 
-        this._baseUrl = protocol + hostname;
+        this._baseUrl = protocol + hostname + ':8000';
     };
 
     SocketRegistry._instance = null;
