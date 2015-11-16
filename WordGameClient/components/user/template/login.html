@@ -1,0 +1,29 @@
+<div class="login-container" data-loginurl="{{loginUrl}}" data-redirectto="{{redirectTo}}"
+     data-clientvalidate="{{clientValidate}}">
+    <div class="card-wrapper round">
+        {{#if hasTitle}}
+            <div class="card-title">
+                <div class="fTitle login">{{title}}</div>
+            </div>
+        {{/if}}
+        <div class="card-body {{#if hasTitle}} {{else}}no-title{{/if}}">
+            <div class="form-key-value">
+                <div class="form-key">User name:</div>
+                <div class="form-value">
+                    {{component name="form" view="input" type="text" hasLabel="false" value="Enter username" sid="userName"
+                    validationType="notNull" parentId=parentId}}
+                </div>
+            </div>
+            <div class="form-key-value">
+                <label class="form-key">Password:</label>
+                <div class="form-value">
+                    {{component name="form" view="input" hasLabel="false" type="password" sid="password"
+                    validationType="notNull" parentId=parentId}}
+                </div>
+            </div>
+            <div class="right-container">
+                {{component name="form" view="button" label="Login" sid="loginButton" type="primary" parentId=parentId}}
+            </div>
+        </div>
+    </div>
+</div>

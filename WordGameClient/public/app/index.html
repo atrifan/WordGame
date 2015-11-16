@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+    <title></title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/phoneapp.css">
+
+    <script src="https://cdn.firebase.com/v0/firebase.js"></script>
+    <script src="js/lib/jquery-1.9.0.min.js"></script>
+    <script src="js/lib/jquery-ui-1.10.3.custom.min.js"></script>
+    <script src="js/lib/es5-shim.min.js"></script>
+    <script src="js/lib/require.js"></script>
+    <script src="js/lib/angular.1.2.16.min.js"></script>
+    <script src="js/lib/angular-resource.1.2.16.min.js"></script>
+    <script src="js/lib/angular-route.1.2.16.min.js"></script>
+    <script src="https://cdn.firebase.com/libs/angularfire/0.5.0/angularfire.min.js"></script>
+    <script src="js/lib/moment.min.js"></script>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
+
+    <script>
+        var phoneApp = angular.module('phoneApp', [
+            'ngRoute',
+            'firebase',
+            'controllers',
+            'directives'
+        ]);
+
+    </script>
+    <!--<script src="js/app.js"></script>
+    -->
+    <script type="text/javascript">
+        require(['js/app-config.js'], function () {
+            angular.module('phoneApp').config(['$routeProvider',
+                function ($routeProvider) {
+                    $routeProvider
+                            .when('/call', {
+                                templateUrl: 'templates/call.html',
+                                controller: 'Caller'
+                            })
+                            .when('/contacts/:contactId', {
+                                templateUrl: 'templates/contact.html',
+                                controller: 'ContactDetail'
+                            })
+                }
+            ]);
+            angular.module('phoneApp').config( [
+                '$compileProvider',
+                function( $compileProvider )
+                {
+                    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|tel|sms):/);
+                    // Angular before v1.2 uses $compileProvider.urlSanitizationWhitelist(...)
+                }
+            ]);
+            //angular.bootstrap(document, ["phoneApp"]);
+            angular.bootstrap(document, ["phoneApp"]);
+        });
+    </script>
+
+
+</head>
+<body ng-view class="view-frame">
+
+
+</body>
+</html>
