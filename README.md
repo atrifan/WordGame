@@ -105,5 +105,8 @@ This is a simple word puzzle word game in Romanian, that can be played in a mult
 * v0.6(Bonus) - PlayerController and frontend interface(the frontend interface should use websockets - library socket.io for real-time) + testing
 * v0.7(Bonus) - Deploy on TomCat - done
 
+#Playable Demo:
+##[WordGame](http://comperio-febie.rhcloud.com/WordGameClient/public/template/wordGame.html)##
+
 
 
